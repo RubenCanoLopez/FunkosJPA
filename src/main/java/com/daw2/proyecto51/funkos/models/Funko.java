@@ -56,4 +56,19 @@ public class Funko {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public Long getId() { return id;}
+    public String getNombre() { return nombre;}
+    public BigDecimal getPrecio() { return precio;}
+    public Integer getCantidad() { return cantidad;}
+    public Categoria categoria() { return categoria;}
+    public boolean isDeleted() { return deleted;}
+    public LocalDateTime getCratedAt() { return cratedAt;}
+    public LocalDateTime getUpdatedAt() { return updatedAt;}
+
+    public void setNombre(String nombre) { this.nombre = nombre;}
+    public void setPrecio(BigDecimal precio) { this.precio = precio;}
+    public void setCantidad(Integer cantidad) { this.cantidad = cantidad;}
+    public void setCategoria(Categoria categoria) { this.categoria = categoria;}
+    public void setDeleted (Boolean borrado) { this.deleted = borrado;}
+
 }
