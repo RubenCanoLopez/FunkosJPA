@@ -1,4 +1,4 @@
 package com.daw2.proyecto51.categorias.dto;
 
-public class CategoriaResponse {
+public record CategoriaResponse (Long id, String nombre, long numeroDeFunkos){
 }
