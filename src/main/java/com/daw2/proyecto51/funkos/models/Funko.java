@@ -36,7 +36,7 @@ public class Funko {
     private Boolean deleted = false;
 
     @Column (name = "created_at", updatable = false)
-    private LocalDateTime cratedAt = LocalDateTime.now();
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column (name = "updated_at")
     private LocalDateTime updatedAt = LocalDateTime.now();
@@ -60,9 +60,9 @@ public class Funko {
     public String getNombre() { return nombre;}
     public BigDecimal getPrecio() { return precio;}
     public Integer getCantidad() { return cantidad;}
-    public Categoria categoria() { return categoria;}
+    public Categoria getCategoria() { return categoria;}
     public boolean isDeleted() { return deleted;}
-    public LocalDateTime getCratedAt() { return cratedAt;}
+    public LocalDateTime getCreatedAt() { return createdAt;}
     public LocalDateTime getUpdatedAt() { return updatedAt;}
 
     public void setNombre(String nombre) { this.nombre = nombre;}
