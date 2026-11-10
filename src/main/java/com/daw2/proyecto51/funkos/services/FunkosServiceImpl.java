@@ -9,13 +9,18 @@ import com.daw2.proyecto51.funkos.exceptions.FunkoBadRequestException;
 import com.daw2.proyecto51.funkos.exceptions.FunkoConflictException;
 import com.daw2.proyecto51.funkos.exceptions.FunkoNotFoundException;
 import com.daw2.proyecto51.funkos.mappers.FunkoMapper;
+import com.daw2.proyecto51.funkos.models.Funko;
 import com.daw2.proyecto51.funkos.repositories.FunkosRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.Optional;
 
 @Service
 public class FunkosServiceImpl implements FunkosService {
@@ -133,5 +138,36 @@ public class FunkosServiceImpl implements FunkosService {
         return categoriasRepository.findByNombreIgnoreCase(nombre)
                 .orElseThrow(() -> new FunkoBadRequestException(
                         "La categoría '" + nombre + "' no existe"));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<FunkoResponse> buscar(Optional<String> categoria,
+                                      Optional<String> nombre,
+                                      Optional<BigDecimal> precioMax,
+                                      Pageable pageable) {
+        // 1. La condición base: los no borrados. SIEMPRE se aplica
+        Specification<Funko> spec = (root, query, cb) -> cb.isFalse(root.get("deleted"));
+
+        // 2. un if por filtro
+        if (categoria.isPresent()) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(cb.upper(root.get("categoria").get("nombre")),
+                            categoria.get().toUpperCase()));
+        }
+
+        if (nombre.isPresent()) {
+            spec = spec.and((root, query, cb) ->
+                    cb.like(cb.lower(root.get("nombre")),
+                            "%" + nombre.get().toLowerCase() + "%"));
+        }
+
+        if (precioMax.isPresent()) {
+            spec = spec.and((root, query, cb) ->
+                    cb.lessThanOrEqualTo(root.get("precio"), precioMax.get()));
+        }
+
+        // 3 . criterios y paginacion, en la misma llamada
+        return repositorio.findAll(spec, pageable).map(mapper::toResponse);
     }
 }
